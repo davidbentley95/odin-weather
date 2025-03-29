@@ -21,6 +21,46 @@ async function getWeatherData() {
 
 function updatePageDate(location, icon, temp, sunrise, sunset, humidity, uvindex) {
     console.log(location, icon, temp, sunrise, sunset, humidity, uvindex);
+
+    const container = document.querySelector("#weather-container");
+    container.innerHTML = ""; // Clear previous content
+
+    const locationElement = document.createElement("h2");
+    locationElement.classList.add("location-header");
+    locationElement.textContent = location;
+
+    const iconElement = document.createElement("p");
+    iconElement.classList.add("weather-icon-text");
+    iconElement.textContent = icon;
+
+    const tempElement = document.createElement("p");
+    tempElement.classList.add("temperature");
+    tempElement.textContent = `Temperature: ${temp}`;
+
+    const sunriseElement = document.createElement("p");
+    sunriseElement.classList.add("sunrise");
+    sunriseElement.textContent = `Sunrise: ${sunrise}`;
+
+    const sunsetElement = document.createElement("p");
+    sunsetElement.classList.add("sunset");
+    sunsetElement.textContent = `Sunset: ${sunset}`;
+
+    const humidityElement = document.createElement("p");
+    humidityElement.classList.add("humidity");
+    humidityElement.textContent = `Humidity: ${humidity}%`;
+
+    const uvIndexElement = document.createElement("p");
+    uvIndexElement.classList.add("uv-index");
+    uvIndexElement.textContent = `UV Index: ${uvindex}`;
+
+    // Append elements to the container
+    container.appendChild(locationElement);
+    container.appendChild(iconElement);
+    container.appendChild(tempElement);
+    container.appendChild(sunriseElement);
+    container.appendChild(sunsetElement);
+    container.appendChild(humidityElement);
+    container.appendChild(uvIndexElement);
 }
 
 getWeatherData();
