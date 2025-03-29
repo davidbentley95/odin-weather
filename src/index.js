@@ -1,10 +1,13 @@
 import "./styles.css";
 
-let cityQuery = "Vancouver";
+let cityQuery = "";
 let unitGroup = "uk";
-let apiSearchQuery = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${cityQuery}?unitGroup=${unitGroup}&key=Q5PNNCTCNG9SWP7EEZQX9CPKG&contentType=json`;
+
 
 async function getWeatherData() {
+
+    let apiSearchQuery = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${cityQuery}?unitGroup=${unitGroup}&key=Q5PNNCTCNG9SWP7EEZQX9CPKG&contentType=json`;
+    
     const response = await fetch(apiSearchQuery, {mode: 'cors'});
     const data = await response.json();
     const location = data.resolvedAddress;
@@ -63,4 +66,18 @@ function updatePageDate(location, icon, temp, sunrise, sunset, humidity, uvindex
     container.appendChild(uvIndexElement);
 }
 
-getWeatherData();
+
+
+document.getElementById("city-form").addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent form submission
+
+    const cityInput = document.getElementById("city-input");
+
+    if (cityInput.checkValidity()) { 
+        cityQuery = cityInput.value; 
+        console.log("Valid input:", cityQuery);
+        getWeatherData();
+    } else {
+        cityInput.reportValidity();
+    }
+});
