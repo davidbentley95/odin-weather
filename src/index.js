@@ -103,3 +103,18 @@ document.getElementById("city-form").addEventListener("submit", function (event)
         cityInput.reportValidity();
     }
 });
+
+document.querySelector(".temp-unit-buttons-container").addEventListener("click", (e) => {
+    const label = e.target.closest("label")
+
+    if (label) {
+
+        if (label.classList.contains("celsius")) {
+            unitGroup = "uk";
+            getWeatherData();
+        } else if (label.classList.contains("fahreinheit")) {
+            unitGroup = "us";
+            getWeatherData();
+        }
+    }
+})
