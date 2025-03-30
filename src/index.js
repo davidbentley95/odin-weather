@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import "./styles.css";
 
 let cityQuery = "";
@@ -32,9 +33,10 @@ function updatePageDate(location, icon, temp, sunrise, sunset, humidity, uvindex
     locationElement.classList.add("location-header");
     locationElement.textContent = location;
 
-    const iconElement = document.createElement("p");
-    iconElement.classList.add("weather-icon-text");
-    iconElement.textContent = icon;
+    const iconElement = document.createElement("img");
+    iconElement.classList.add("weather-icon");
+    iconElement.src = `https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/SVG/1st%20Set%20-%20Monochrome/${icon}.svg`;
+    iconElement.alt = icon; // For accessibility
 
     let tempUnit;
 
@@ -88,7 +90,15 @@ function updatePageDate(location, icon, temp, sunrise, sunset, humidity, uvindex
     container.appendChild(minorStats);
 }
 
-
+function formatTempUnit() {
+    document.querySelectorAll("label").forEach(element => {
+        if(element.classList.contains(unitGroup)) {
+            element.classList.add("checkedButton")
+        } else {
+            element.classList.remove("checkedButton")
+        }
+    })
+}
 
 document.getElementById("city-form").addEventListener("submit", function (event) {
     event.preventDefault(); // Prevent form submission
@@ -99,6 +109,9 @@ document.getElementById("city-form").addEventListener("submit", function (event)
         cityQuery = cityInput.value; 
         console.log("Valid input:", cityQuery);
         getWeatherData();
+        document.querySelector("#weather-container").style.display = "grid";
+        document.querySelector(".temp-unit-buttons-container").style.display = "flex";
+        formatTempUnit();
     } else {
         cityInput.reportValidity();
     }
@@ -111,9 +124,11 @@ document.querySelector(".temp-unit-buttons-container").addEventListener("click",
 
         if (label.classList.contains("celsius")) {
             unitGroup = "uk";
+            formatTempUnit();
             getWeatherData();
         } else if (label.classList.contains("fahreinheit")) {
             unitGroup = "us";
+            formatTempUnit();
             getWeatherData();
         }
     }
