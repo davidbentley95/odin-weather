@@ -6,21 +6,32 @@ let unitGroup = "uk";
 
 
 async function getWeatherData() {
+    try {
+        let apiSearchQuery = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${cityQuery}?unitGroup=${unitGroup}&key=Q5PNNCTCNG9SWP7EEZQX9CPKG&contentType=json`;
 
-    let apiSearchQuery = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${cityQuery}?unitGroup=${unitGroup}&key=Q5PNNCTCNG9SWP7EEZQX9CPKG&contentType=json`;
+        const response = await fetch(apiSearchQuery, { mode: 'cors' });
 
-    const response = await fetch(apiSearchQuery, {mode: 'cors'});
-    const data = await response.json();
-    const location = data.resolvedAddress;
-    const icon = data.currentConditions.icon;
-    const temp = data.currentConditions.temp;
-    const sunrise = data.currentConditions.sunrise;
-    const sunset = data.currentConditions.sunset;
-    const humidity = data.currentConditions.humidity;
-    const uvindex = data.currentConditions.uvindex;
+        const data = await response.json();
 
-    console.log(data);
-    updatePageDate(location, icon, temp, sunrise, sunset, humidity, uvindex);
+        const location = data.resolvedAddress;
+        const icon = data.currentConditions.icon;
+        const temp = data.currentConditions.temp;
+        const sunrise = data.currentConditions.sunrise;
+        const sunset = data.currentConditions.sunset;
+        const humidity = data.currentConditions.humidity;
+        const uvindex = data.currentConditions.uvindex;
+        document.querySelector("#weather-container").style.display = "grid";
+        document.querySelector(".temp-unit-buttons-container").style.display = "flex";
+
+        console.log(data);
+        updatePageDate(location, icon, temp, sunrise, sunset, humidity, uvindex);
+
+    } catch (error) {
+        console.error('Error fetching weather data:', error.message);
+
+        
+        alert('Sorry, we could not fetch weather data for that city. Please try again.');
+    }
 }
 
 function updatePageDate(location, icon, temp, sunrise, sunset, humidity, uvindex) {
@@ -109,8 +120,6 @@ document.getElementById("city-form").addEventListener("submit", function (event)
         cityQuery = cityInput.value; 
         console.log("Valid input:", cityQuery);
         getWeatherData();
-        document.querySelector("#weather-container").style.display = "grid";
-        document.querySelector(".temp-unit-buttons-container").style.display = "flex";
         formatTempUnit();
     } else {
         cityInput.reportValidity();
