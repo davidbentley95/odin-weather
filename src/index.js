@@ -4,6 +4,17 @@ import "./styles.css";
 let cityQuery = "";
 let unitGroup = "uk";
 
+async function getCityDetails(userString) {
+    let apiCityQuery = `http://api.geonames.org/searchJSON?q=${userString}&maxRows=5&username=davidbentley`;
+
+    const response = await fetch(apiCityQuery, { mode: "cors" });
+
+    const data = await response.json();
+
+    data.geonames.forEach(cityObject => {
+        displayPossibleCities(cityObject.name, cityObject.adminName1, cityObject.countryName);
+    })
+}
 
 async function getWeatherData() {
     try {
@@ -23,7 +34,6 @@ async function getWeatherData() {
         document.querySelector("#weather-container").style.display = "grid";
         document.querySelector(".temp-unit-buttons-container").style.display = "flex";
 
-        console.log(data);
         updatePageDate(location, icon, temp, sunrise, sunset, humidity, uvindex);
 
     } catch (error) {
@@ -35,7 +45,6 @@ async function getWeatherData() {
 }
 
 function updatePageDate(location, icon, temp, sunrise, sunset, humidity, uvindex) {
-    console.log(location, icon, temp, sunrise, sunset, humidity, uvindex);
 
     const container = document.querySelector("#weather-container");
     container.innerHTML = ""; // Clear previous content
@@ -111,14 +120,21 @@ function formatTempUnit() {
     })
 }
 
+function displayPossibleCities(cityName, adminName1, countryName) {
+    const cityElement = document.createElement("div");
+    cityElement.classList.add("auto-city");
+    cityElement.textContent = `${cityName}, ${adminName1}, ${countryName}`;
+
+    document.querySelector(".auto-city-listing").append(cityElement);
+}
+
 document.getElementById("city-form").addEventListener("submit", function (event) {
     event.preventDefault(); // Prevent form submission
-
+    document.querySelector(".auto-city-listing").innerHTML = "";
     const cityInput = document.getElementById("city-input");
 
     if (cityInput.checkValidity()) { 
         cityQuery = cityInput.value; 
-        console.log("Valid input:", cityQuery);
         getWeatherData();
         formatTempUnit();
     } else {
@@ -142,3 +158,19 @@ document.querySelector(".temp-unit-buttons-container").addEventListener("click",
         }
     }
 })
+
+let debounceTimer;
+document.getElementById("city-input").addEventListener("input", function(event) {
+    document.querySelector(".auto-city-listing").innerHTML = "";
+    clearTimeout(debounceTimer);
+    
+    debounceTimer = setTimeout(() => {
+        getCityDetails(event.target.value); 
+    }, 300);  // Wait 300ms before executing
+});
+
+document.querySelector(".auto-city-listing").addEventListener("click", (e) => {
+
+    document.querySelector("#city-input").value = e.target.innerHTML;
+})
+

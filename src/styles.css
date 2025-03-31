@@ -43,6 +43,7 @@ input {
     border: 1px solid rgba( 255, 255, 255, 0.18 );
     padding: 25px;
     margin-top: 20px;
+    max-width: 500px;
 }
 
 .minor-stats-div {
@@ -93,4 +94,28 @@ label {
 .weather-icon {
     width: 50px;
     height: auto;
+}
+
+.auto-city-listing {
+    margin-top: 10px;
+    background: rgba( 255, 255, 255, 0.2 );
+    backdrop-filter: blur( 4px );
+    -webkit-backdrop-filter: blur( 4px );
+}
+
+.auto-city {
+    margin: 10px;
+    padding: 5px
+}
+
+.auto-city:hover {
+    background: rgba( 255, 255, 255, 0.5 );
+    cursor: pointer;
+}
+
+@media screen and (max-width: 520px) {
+    #weather-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+    }
 }
