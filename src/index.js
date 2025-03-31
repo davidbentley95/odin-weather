@@ -1,19 +1,22 @@
-import { format } from "date-fns";
 import "./styles.css";
 
 let cityQuery = "";
 let unitGroup = "uk";
 
 async function getCityDetails(userString) {
-    let apiCityQuery = `http://api.geonames.org/searchJSON?q=${userString}&maxRows=5&username=davidbentley`;
+    let apiCityQuery = `https://secure.geonames.org/searchJSON?q=${userString}&maxRows=5&username=davidbentley`;
 
     const response = await fetch(apiCityQuery, { mode: "cors" });
 
     const data = await response.json();
 
-    data.geonames.forEach(cityObject => {
-        displayPossibleCities(cityObject.name, cityObject.adminName1, cityObject.countryName);
-    })
+    if(document.querySelector(".auto-city-listing").childElementCount === 0) {
+        data.geonames.forEach(cityObject => {
+            displayPossibleCities(cityObject.name, cityObject.adminName1, cityObject.countryName);
+        })
+    } else {
+        updatePossibleCities(data.geonames);
+    }
 }
 
 async function getWeatherData() {
@@ -128,6 +131,17 @@ function displayPossibleCities(cityName, adminName1, countryName) {
     document.querySelector(".auto-city-listing").append(cityElement);
 }
 
+function updatePossibleCities(cityArray) {
+    console.log(cityArray);
+    const cityListing = document.querySelector(".auto-city-listing");
+    console.log(cityListing);
+
+
+    for (let i=0; i < cityArray.length; i++) {
+        cityListing.children[i].textContent = `${cityArray[i].name}, ${cityArray[i].adminName1}, ${cityArray[i].countryName}`;
+    }
+}
+
 document.getElementById("city-form").addEventListener("submit", function (event) {
     event.preventDefault(); // Prevent form submission
     document.querySelector(".auto-city-listing").innerHTML = "";
@@ -161,7 +175,6 @@ document.querySelector(".temp-unit-buttons-container").addEventListener("click",
 
 let debounceTimer;
 document.getElementById("city-input").addEventListener("input", function(event) {
-    document.querySelector(".auto-city-listing").innerHTML = "";
     clearTimeout(debounceTimer);
     
     debounceTimer = setTimeout(() => {
@@ -173,4 +186,3 @@ document.querySelector(".auto-city-listing").addEventListener("click", (e) => {
 
     document.querySelector("#city-input").value = e.target.innerHTML;
 })
-

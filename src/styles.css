@@ -116,6 +116,6 @@ label {
 @media screen and (max-width: 520px) {
     #weather-container {
         grid-template-columns: 1fr;
-        grid-template-rows: repeat(4, 1fr);
+        grid-template-rows: 1fr, 1fr, 1fr, 2fr;
     }
 }
